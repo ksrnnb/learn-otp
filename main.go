@@ -1,9 +1,14 @@
 package main
 
-import "github.com/ksrnnb/otp/hotp"
+import (
+	"fmt"
+
+	"github.com/ksrnnb/otp/totp"
+)
 
 func main() {
 	secret := []byte{'h', 'e', 'l', 'l', 'o'}
 
-	hotp.New(secret, 0)
+	// TODO: secret base32 encode
+	fmt.Println(totp.New(secret, 6))
 }
