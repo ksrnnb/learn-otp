@@ -1,4 +1,4 @@
-# learn-otp
+# otp
 
 ## References
 - [RFC4226](https://datatracker.ietf.org/doc/html/rfc4226)
