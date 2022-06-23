@@ -24,6 +24,8 @@ const (
 func (r Router) RegisterRoutes() {
 	r.mr.HandleFunc("/", ic.Show).Methods(Get)
 	r.mr.HandleFunc("/login", lc.Show).Methods(Get)
+	r.mr.HandleFunc("/login", lc.Login).Methods(Post)
+	r.mr.HandleFunc("/login/otp", lc.OTPLogin).Methods(Post)
 }
 
 func (r Router) Router() *mux.Router {
