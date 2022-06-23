@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 )
 
@@ -13,25 +12,32 @@ func NewLoginController() LoginController {
 }
 
 func (lc LoginController) Show(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("view/login.html")
-	if err != nil {
-		panic(err)
+	if isLoggedIn(w, r) {
+		redirectToIndex(w, r)
+		return
 	}
 
-	tmpl.Execute(w, nil)
+	if isOTPLoggedIn(w, r) {
+		redirectToOTPLogin(w, r)
+	}
+
+	tmplLogin.Execute(w, nil)
 }
 
 func (lc LoginController) Login(w http.ResponseWriter, r *http.Request) {
-	// TODO: redirect
-	tmpl, err := template.ParseFiles("view/otp.html")
-	if err != nil {
-		panic(err)
+	http.Redirect(w, r, "/login/otp", http.StatusFound)
+}
+
+func (lc LoginController) ShowOTPLogin(w http.ResponseWriter, r *http.Request) {
+	if !isOTPLoggedIn(w, r) {
+		redirectToLogin(w, r)
 	}
 
-	tmpl.Execute(w, nil)
+	tmplOTPLogin.Execute(w, nil)
 }
 
 func (lc LoginController) OTPLogin(w http.ResponseWriter, r *http.Request) {
 	// TODO: success -> index, fail -> otp.html
 	fmt.Println("OTP Log in")
+	redirectToIndex(w, r)
 }

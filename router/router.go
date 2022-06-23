@@ -25,6 +25,7 @@ func (r Router) RegisterRoutes() {
 	r.mr.HandleFunc("/", ic.Show).Methods(Get)
 	r.mr.HandleFunc("/login", lc.Show).Methods(Get)
 	r.mr.HandleFunc("/login", lc.Login).Methods(Post)
+	r.mr.HandleFunc("/login/otp", lc.ShowOTPLogin).Methods(Get)
 	r.mr.HandleFunc("/login/otp", lc.OTPLogin).Methods(Post)
 }
 
