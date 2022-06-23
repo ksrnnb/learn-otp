@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/base32"
 	"fmt"
+	"log"
+	"net/http"
 
+	"github.com/ksrnnb/otp/router"
 	"github.com/ksrnnb/otp/totp"
 )
 
@@ -15,4 +18,11 @@ func main() {
 	encoder := base32.StdEncoding.WithPadding(base32.NoPadding)
 	encSecret := encoder.EncodeToString(secret)
 	fmt.Println("base32 secret:", encSecret)
+
+	r := router.NewRouter()
+	r.RegisterRoutes()
+
+	fmt.Println("connect to localhost:8080...")
+	srv := &http.Server{Handler: r.Router(), Addr: "localhost:8080"}
+	log.Fatal(srv.ListenAndServe())
 }
