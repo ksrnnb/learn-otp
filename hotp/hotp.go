@@ -45,6 +45,8 @@ func dynamicTruncate(hs []byte) uint32 {
 
 	// get last 31 bits for hs[offset]...hs[offset + 3]
 	// 0x7F => 0111 1111
-
-	return binary.BigEndian.Uint32(hs[offset:offset+4]) & 0x7fffffff
+	return uint32(hs[offset]&0x7f)<<24 |
+		uint32(hs[offset+1]&0xff)<<16 |
+		uint32(hs[offset+2]&0xff)<<8 |
+		uint32(hs[offset+3]&0xff)
 }
