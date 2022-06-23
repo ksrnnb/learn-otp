@@ -23,6 +23,6 @@ func main() {
 	r.RegisterRoutes()
 
 	fmt.Println("connect to localhost:8080")
-	srv := &http.Server{Handler: r.Router(), Addr: "localhost:8080"}
+	srv := &http.Server{Handler: r.Router(), Addr: "0.0.0.0:8080"}
 	log.Fatal(srv.ListenAndServe())
 }
