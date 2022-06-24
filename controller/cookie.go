@@ -18,3 +18,12 @@ func isOTPLoggedIn(w http.ResponseWriter, r *http.Request) bool {
 
 	return err == nil
 }
+
+func setCookie(w http.ResponseWriter, key string, value string) {
+	c := &http.Cookie{
+		Name:  key,
+		Value: value,
+		Path:  "/",
+	}
+	http.SetCookie(w, c)
+}

@@ -14,6 +14,15 @@ var users []*User = []*User{
 	},
 }
 
-func (u *User) First() *User {
-	return users[0]
+func FindUserById(id string) *User {
+	for _, u := range users {
+		if u.id == id {
+			return u
+		}
+	}
+	return nil
+}
+
+func (u *User) EqualsPassword(pwd string) bool {
+	return u.password == pwd
 }
