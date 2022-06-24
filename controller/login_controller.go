@@ -23,7 +23,7 @@ func (lc LoginController) Show(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isOTPLoggedIn(w, r) {
-		redirectToOTPLogin(w, r)
+		destroyCookies(w, r)
 	}
 
 	tmplLogin.Execute(w, nil)

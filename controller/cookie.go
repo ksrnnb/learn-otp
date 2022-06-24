@@ -27,3 +27,10 @@ func setCookie(w http.ResponseWriter, key string, value string) {
 	}
 	http.SetCookie(w, c)
 }
+
+func destroyCookies(w http.ResponseWriter, r *http.Request) {
+	for _, c := range r.Cookies() {
+		c.MaxAge = -1
+		http.SetCookie(w, c)
+	}
+}

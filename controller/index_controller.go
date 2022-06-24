@@ -39,10 +39,7 @@ func (lc IndexController) Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if isOTPLoggedIn(w, r) {
-		redirectToOTPLogin(w, r)
-		return
-	}
+	destroyCookies(w, r)
 
 	// user is NOT logged in
 	redirectToLogin(w, r)
