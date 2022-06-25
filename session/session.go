@@ -14,6 +14,8 @@ import (
 const (
 	otpSessionTTLSecond = 5 * 60
 	sessionTTLSecond    = 60 * 60
+	// store used otp only 2 codes (1 code: 30 sec)
+	usedOtpSecond = 60
 )
 
 type SessionClient struct {
@@ -82,6 +84,25 @@ func (sc SessionClient) GetLoginSession(ctx context.Context, sessionId string) (
 	return userId, err
 }
 
+func (sc SessionClient) SetUsedOTP(ctx context.Context, userId string, otp string) error {
+	key := fmt.Sprintf("otp:used:%v", userId)
+	if err := sc.LPush(ctx, key, otp); err != nil {
+		return err
+	}
+
+	// will store 2 otps
+	if err := sc.LTrim(ctx, key, 0, 1); err != nil {
+		return err
+	}
+
+	return sc.Expire(ctx, key, usedOtpSecond*time.Second)
+}
+
+func (sc SessionClient) GetUsedOTPs(ctx context.Context, userId string) []string {
+	key := fmt.Sprintf("otp:used:%v", userId)
+	return sc.rdb.LRange(ctx, key, 0, 1).Val()
+}
+
 func (sc SessionClient) Get(ctx context.Context, key string) (string, error) {
 	return sc.rdb.Get(ctx, key).Result()
 }
@@ -92,4 +113,20 @@ func (sc SessionClient) Set(ctx context.Context, key string, value interface{}, 
 
 func (sc SessionClient) Del(ctx context.Context, key string) error {
 	return sc.rdb.Del(ctx, key).Err()
+}
+
+func (sc SessionClient) Expire(ctx context.Context, key string, ttl time.Duration) error {
+	return sc.rdb.Expire(ctx, key, ttl).Err()
+}
+
+func (sc SessionClient) LPush(ctx context.Context, key string, values ...interface{}) error {
+	return sc.rdb.LPush(ctx, key, values...).Err()
+}
+
+func (sc SessionClient) LTrim(ctx context.Context, key string, start int64, stop int64) error {
+	return sc.rdb.LTrim(ctx, key, start, stop).Err()
+}
+
+func (sc SessionClient) LPop(ctx context.Context, key string, values ...interface{}) (string, error) {
+	return sc.rdb.LPop(ctx, key).Result()
 }

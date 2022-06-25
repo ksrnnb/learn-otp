@@ -99,7 +99,22 @@ func (lc LoginController) OTPLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// redirect if otp is already used
+	usedOtps := c.GetUsedOTPs(ctx, userId)
+	for _, usedOtp := range usedOtps {
+		if usedOtp == otp {
+			redirectToOTPLogin(w, r)
+			return
+		}
+	}
+
 	s, err := c.CreateLoginSession(ctx, userId)
+	if err != nil {
+		redirectToOTPLogin(w, r)
+		return
+	}
+
+	err = c.SetUsedOTP(ctx, userId, otp)
 	if err != nil {
 		redirectToOTPLogin(w, r)
 		return
