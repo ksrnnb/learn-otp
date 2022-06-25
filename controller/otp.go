@@ -7,6 +7,7 @@ import (
 const otpDigits = 6
 
 func validateOTP(secret string, otp string) bool {
-	expected := totp.New([]byte(secret), otpDigits)
-	return otp == expected
+	onTimeOtp := totp.New([]byte(secret), otpDigits, 0)
+	beforeOtp := totp.New([]byte(secret), otpDigits, -1)
+	return otp == onTimeOtp || otp == beforeOtp
 }

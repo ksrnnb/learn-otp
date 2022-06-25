@@ -7,10 +7,10 @@ import (
 )
 
 // TOTP time step
-const timeStepSecond = 30
+const timeStepSecond int64 = 30
 
-func New(secret []byte, digits int) string {
-	return hotp.New(secret, counter(), digits)
+func New(secret []byte, digits int, offset int) string {
+	return hotp.New(secret, counter()+uint64(offset), digits)
 }
 
 func counter() uint64 {
