@@ -75,7 +75,7 @@ func (sc SessionClient) CreateLoginSession(ctx context.Context, userId string) (
 }
 
 func (sc SessionClient) GetLoginSession(ctx context.Context, sessionId string) (userId string, err error) {
-	userId, err = sc.Get(ctx, fmt.Sprintf("session:login:%v", sessionId))
+	userId, err = sc.Get(ctx, sessionId)
 	if err != nil {
 		return "", err
 	}

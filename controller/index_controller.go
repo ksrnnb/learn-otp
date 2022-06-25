@@ -1,8 +1,14 @@
 package controller
 
 import (
+	"context"
+	"fmt"
 	"html/template"
 	"net/http"
+	"os"
+
+	"github.com/ksrnnb/otp/model"
+	"github.com/ksrnnb/otp/session"
 )
 
 type IndexController struct{}
@@ -34,13 +40,25 @@ func NewIndexController() IndexController {
 }
 
 func (lc IndexController) Show(w http.ResponseWriter, r *http.Request) {
-	if isLoggedIn(w, r) {
-		tmplIndex.Execute(w, nil)
+	if !isLoggedIn(w, r) {
+		destroyCookies(w, r)
+		redirectToLogin(w, r)
 		return
 	}
 
-	destroyCookies(w, r)
+	sid, err := r.Cookie(sessionCookieName)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v", err)
+		return
+	}
 
-	// user is NOT logged in
-	redirectToLogin(w, r)
+	c := session.NewClient()
+	userId, err := c.GetLoginSession(context.Background(), sid.Value)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v", err)
+		return
+	}
+
+	user := model.FindUserById(userId)
+	tmplIndex.Execute(w, map[string]interface{}{"id": user.Id()})
 }

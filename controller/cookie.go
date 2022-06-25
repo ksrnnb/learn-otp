@@ -13,8 +13,13 @@ const (
 )
 
 func isLoggedIn(w http.ResponseWriter, r *http.Request) bool {
-	_, err := r.Cookie(sessionCookieName)
+	sid, err := r.Cookie(sessionCookieName)
+	if err != nil {
+		return false
+	}
 
+	c := session.NewClient()
+	_, err = c.GetLoginSession(context.Background(), sid.Value)
 	return err == nil
 }
 

@@ -30,3 +30,7 @@ func (u *User) EqualsPassword(pwd string) bool {
 func (u *User) Secret() string {
 	return u.secret
 }
+
+func (u *User) Id() string {
+	return u.id
+}

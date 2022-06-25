@@ -7,13 +7,10 @@ import (
 	"net/http"
 
 	"github.com/ksrnnb/otp/router"
-	"github.com/ksrnnb/otp/totp"
 )
 
 func main() {
 	secret := []byte{'h', 'e', 'l', 'l', 'o'}
-
-	fmt.Println(totp.New(secret, 6))
 
 	encoder := base32.StdEncoding.WithPadding(base32.NoPadding)
 	encSecret := encoder.EncodeToString(secret)

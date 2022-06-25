@@ -9,8 +9,12 @@
 </head>
 
 <body>
-  <h2>Hello, world</h2>
-  <a href="/login">link to login page</a>
+  <h2>Hello, {{ .id }}</h2>
+  <div>
+    <form action="/logout" method="POST">
+      <button type="submit">logout</button>
+    </form>
+  </div>
 </body>
 
 </html>

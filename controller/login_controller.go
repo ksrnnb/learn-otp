@@ -93,12 +93,18 @@ func (lc LoginController) OTPLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	code := r.FormValue("code")
-	if !validateOTP(user.Secret(), code) {
+	otp := r.FormValue("otp")
+	if !validateOTP(user.Secret(), otp) {
 		redirectToOTPLogin(w, r)
 		return
 	}
 
-	c.CreateLoginSession(ctx, userId)
+	s, err := c.CreateLoginSession(ctx, userId)
+	if err != nil {
+		redirectToOTPLogin(w, r)
+		return
+	}
+
+	setCookie(w, sessionCookieName, s)
 	redirectToIndex(w, r)
 }
