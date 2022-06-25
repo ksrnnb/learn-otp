@@ -15,6 +15,7 @@ func NewRouter() *Router {
 
 var ic = controller.NewIndexController()
 var lc = controller.NewLoginController()
+var loc = controller.NewLogoutController()
 
 const (
 	Get  = "GET"
@@ -27,6 +28,7 @@ func (r Router) RegisterRoutes() {
 	r.mr.HandleFunc("/login", lc.Login).Methods(Post)
 	r.mr.HandleFunc("/login/otp", lc.ShowOTPLogin).Methods(Get)
 	r.mr.HandleFunc("/login/otp", lc.OTPLogin).Methods(Post)
+	r.mr.HandleFunc("/logout", loc.Logout).Methods(Post)
 }
 
 func (r Router) Router() *mux.Router {
