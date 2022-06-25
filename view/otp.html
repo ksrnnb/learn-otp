@@ -11,6 +11,7 @@
 <body>
   <form action="/login/otp" method="POST">
     <h1>Please enter 6 digits one time password</h1>
+    <p style="color: red;">{{ .error }}</p>
     <div>
       <label for="otp">One time password</label>
       <input type="text" name="otp" id="otp">

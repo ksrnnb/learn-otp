@@ -26,7 +26,7 @@ func (lc LoginController) Show(w http.ResponseWriter, r *http.Request) {
 		destroyCookies(w, r)
 	}
 
-	tmplLogin.Execute(w, nil)
+	tmplLogin.Execute(w, map[string]interface{}{"error": getErrorMessage(w, r)})
 }
 
 func (lc LoginController) Login(w http.ResponseWriter, r *http.Request) {
@@ -39,19 +39,22 @@ func (lc LoginController) Login(w http.ResponseWriter, r *http.Request) {
 
 	user := model.FindUserById(id)
 	if user == nil {
-		redirectToIndex(w, r)
+		setErrorMessage(w, "id or password is not correct")
+		redirectToLogin(w, r)
 		return
 	}
 
 	if !user.EqualsPassword(pwd) {
-		redirectToIndex(w, r)
+		setErrorMessage(w, "id or password is not correct")
+		redirectToLogin(w, r)
 		return
 	}
 
 	c := session.NewClient()
 	s, err := c.CreateOTPSession(context.Background(), id)
 	if err != nil {
-		redirectToIndex(w, r)
+		setErrorMessage(w, "unexpected error")
+		redirectToLogin(w, r)
 		return
 	}
 
@@ -64,7 +67,7 @@ func (lc LoginController) ShowOTPLogin(w http.ResponseWriter, r *http.Request) {
 		redirectToLogin(w, r)
 	}
 
-	tmplOTPLogin.Execute(w, nil)
+	tmplOTPLogin.Execute(w, map[string]interface{}{"error": getErrorMessage(w, r)})
 }
 
 func (lc LoginController) OTPLogin(w http.ResponseWriter, r *http.Request) {
@@ -95,6 +98,7 @@ func (lc LoginController) OTPLogin(w http.ResponseWriter, r *http.Request) {
 
 	otp := r.FormValue("otp")
 	if !validateOTP(user.Secret(), otp) {
+		setErrorMessage(w, "otp is not correct")
 		redirectToOTPLogin(w, r)
 		return
 	}
@@ -103,6 +107,7 @@ func (lc LoginController) OTPLogin(w http.ResponseWriter, r *http.Request) {
 	usedOtps := c.GetUsedOTPs(ctx, userId)
 	for _, usedOtp := range usedOtps {
 		if usedOtp == otp {
+			setErrorMessage(w, "otp is already used")
 			redirectToOTPLogin(w, r)
 			return
 		}

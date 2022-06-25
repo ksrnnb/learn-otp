@@ -35,6 +35,26 @@ func isOTPLoggedIn(w http.ResponseWriter, r *http.Request) bool {
 	return err == nil
 }
 
+func setErrorMessage(w http.ResponseWriter, msg string) {
+	setCookie(w, "error", msg)
+}
+
+func getErrorMessage(w http.ResponseWriter, r *http.Request) string {
+	c, err := r.Cookie("error")
+	if err != nil {
+		return ""
+	}
+
+	deletingCookie := &http.Cookie{
+		Name:   "error",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	}
+	http.SetCookie(w, deletingCookie)
+	return c.Value
+}
+
 func setCookie(w http.ResponseWriter, key string, value string) {
 	c := &http.Cookie{
 		Name:  key,
