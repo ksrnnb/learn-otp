@@ -53,7 +53,7 @@ func (sc SessionClient) CreateOTPSession(ctx context.Context, userId string) (st
 }
 
 func (sc SessionClient) GetOTPSession(ctx context.Context, sessionId string) (userId string, err error) {
-	userId, err = sc.Get(ctx, fmt.Sprintf("session:otp:%v", sessionId))
+	userId, err = sc.Get(ctx, sessionId)
 	if err != nil {
 		return "", err
 	}

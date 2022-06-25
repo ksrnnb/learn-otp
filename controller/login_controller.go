@@ -68,7 +68,37 @@ func (lc LoginController) ShowOTPLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (lc LoginController) OTPLogin(w http.ResponseWriter, r *http.Request) {
-	// TODO: success -> index, fail -> otp.html
-	fmt.Println("OTP Log in")
+	if err := r.ParseForm(); err != nil {
+		fmt.Fprintf(os.Stderr, "%v", err)
+		return
+	}
+
+	sid, err := r.Cookie(otpCookieName)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v", err)
+		return
+	}
+
+	c := session.NewClient()
+	ctx := context.Background()
+	userId, err := c.GetOTPSession(ctx, sid.Value)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v", err)
+		return
+	}
+
+	user := model.FindUserById(userId)
+	if user == nil {
+		redirectToIndex(w, r)
+		return
+	}
+
+	code := r.FormValue("code")
+	if !validateOTP(user.Secret(), code) {
+		redirectToOTPLogin(w, r)
+		return
+	}
+
+	c.CreateLoginSession(ctx, userId)
 	redirectToIndex(w, r)
 }

@@ -26,3 +26,7 @@ func FindUserById(id string) *User {
 func (u *User) EqualsPassword(pwd string) bool {
 	return u.password == pwd
 }
+
+func (u *User) Secret() string {
+	return u.secret
+}

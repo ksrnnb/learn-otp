@@ -1,6 +1,11 @@
 package controller
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+
+	"github.com/ksrnnb/otp/session"
+)
 
 const (
 	sessionCookieName = "session_id"
@@ -14,8 +19,14 @@ func isLoggedIn(w http.ResponseWriter, r *http.Request) bool {
 }
 
 func isOTPLoggedIn(w http.ResponseWriter, r *http.Request) bool {
-	_, err := r.Cookie(otpCookieName)
+	sid, err := r.Cookie(otpCookieName)
 
+	if err != nil {
+		return false
+	}
+
+	c := session.NewClient()
+	_, err = c.GetOTPSession(context.Background(), sid.Value)
 	return err == nil
 }
 
