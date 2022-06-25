@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base32"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,12 +9,6 @@ import (
 )
 
 func main() {
-	secret := []byte{'h', 'e', 'l', 'l', 'o'}
-
-	encoder := base32.StdEncoding.WithPadding(base32.NoPadding)
-	encSecret := encoder.EncodeToString(secret)
-	fmt.Println("base32 secret:", encSecret)
-
 	r := router.NewRouter()
 	r.RegisterRoutes()
 
