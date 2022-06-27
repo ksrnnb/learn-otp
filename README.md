@@ -40,6 +40,10 @@ Then, enter one-time password shown in Google Authenticator.
 - Resynchronization
 - Preventing CSRF attacks
 
+## Articles
+- [DEV](https://dev.to/ksrnnb/implementing-one-time-password-2m70)
+- [Zenn](https://zenn.dev/ksrnnb/articles/326b1963663250)
+
 ## References
 - [RFC4226](https://datatracker.ietf.org/doc/html/rfc4226)
 - [RFC6238](https://datatracker.ietf.org/doc/html/rfc6238)
